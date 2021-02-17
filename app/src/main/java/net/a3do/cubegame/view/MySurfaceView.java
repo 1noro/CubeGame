@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -93,47 +92,57 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         // creamos el muro horizontal superior
         for (int i = 0; i < canvasSquareWidth; i++) {
             int aX = i * squareSize;
-            int aY = 0;
+            int aY = -squareSize;
             int bX = aX + squareSize;
-            int bY = squareSize;
-            wallList.add(new Rectangle(aX, aY, bX, bY, "topWall" + i));
+            int bY = 0;
+            Rectangle wall = new Rectangle(aX, aY, bX, bY, "topWall" + i);
+            wall.setColor(Color.BLACK);
+            wallList.add(wall);
         }
 
         // creamos el muro horizontal inferior
         for (int i = 0; i < canvasSquareWidth; i++) {
             int aX = i * squareSize;
-            int aY = canvasSquareHeight * squareSize - squareSize;
+            int aY = canvasSquareHeight * squareSize;
             int bX = aX + squareSize;
-            int bY = canvasSquareHeight * squareSize;
-            wallList.add(new Rectangle(aX, aY, bX, bY, "bottomWall" + i));
+            int bY = canvasSquareHeight * squareSize + squareSize;
+            Rectangle wall = new Rectangle(aX, aY, bX, bY, "bottomWall" + i);
+            wall.setColor(Color.BLACK);
+            wallList.add(wall);
         }
 
         // creamos el muro vertical izquierdo
-        for (int i = 1; i < canvasSquareHeight - 1; i++) {
-            int aX = 0;
+        for (int i = 0; i < canvasSquareHeight; i++) {
+            int aX = - squareSize;
             int aY = i * squareSize;
-            int bX = squareSize;
+            int bX = 0;
             int bY = aY + squareSize;
-            wallList.add(new Rectangle(aX, aY, bX, bY, "leftWall" + i));
+            Rectangle wall = new Rectangle(aX, aY, bX, bY, "leftWall" + i);
+            wall.setColor(Color.BLACK);
+            wallList.add(wall);
         }
 
         // creamos el muro vertical derecho
-        for (int i = 1; i < canvasSquareHeight - 1; i++) {
-            int aX = canvasSquareWidth * squareSize - squareSize;
+        for (int i = 0; i < canvasSquareHeight; i++) {
+            int aX = canvasSquareWidth * squareSize;
             int aY = i * squareSize;
-            int bX = canvasSquareWidth * squareSize;
+            int bX = canvasSquareWidth * squareSize + squareSize;
             int bY = aY + squareSize;
-            wallList.add(new Rectangle(aX, aY, bX, bY, "leftWall" + i));
+            Rectangle wall = new Rectangle(aX, aY, bX, bY, "leftWall" + i);
+            wall.setColor(Color.BLACK);
+            wallList.add(wall);
         }
 
         // creamos el muro vertical central
-        int centralWallSquareHeight = 20;
+        int centralWallSquareHeight = 15;
         for (int i = 0; i < centralWallSquareHeight - 1; i++) {
             int aX = (canvasSquareWidth * squareSize) / 2 - squareSize / 2;
             int aY = (canvasSquareHeight * squareSize) / 2 - (centralWallSquareHeight * squareSize) / 2 + i * squareSize;
             int bX = (canvasSquareWidth * squareSize) / 2 + squareSize / 2;
             int bY = aY + squareSize;
-            wallList.add(new Rectangle(aX, aY, bX, bY, "centerWall" + i));
+            Rectangle wall = new Rectangle(aX, aY, bX, bY, "centerWall" + i);
+            wall.setColor(Color.BLUE);
+            wallList.add(wall);
         }
 
         // Creamos la pelota
@@ -296,18 +305,12 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-//                Log.d("ACTION_MOVE", "(" + fX + ", " + fY + ") ");
+            case MotionEvent.ACTION_DOWN:
+//                Log.d("ACTION_MOVE || ACTION_DOWN", "(" + fX + ", " + fY + ") ");
                 if (mainLoop.isPlaying()) {
                     player.moveCenterDirectly((int) fX, (int) fY);
                 }
                 break;
-            /*case MotionEvent.ACTION_DOWN:
-//                Log.d("ACTION_DOWN", "(" + fX + ", " + fY + ") ");
-                if (mainLoop.isPlaying()) {
-                    player.moveCenterDirectly((int) fX, (int) fY);
-                    Log.d("MOVED", player.toString());
-                }
-                break;*/
         }
 
 //        performClick();
