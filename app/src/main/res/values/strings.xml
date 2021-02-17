@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CubeGame</string>
+    <string name="text_easy">1</string>
+    <string name="text_medium">2</string>
+    <string name="text_hard">3</string>
+    <string name="text_click_to_start">click to start</string>
+</resources>
