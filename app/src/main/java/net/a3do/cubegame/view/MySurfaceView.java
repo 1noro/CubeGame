@@ -182,11 +182,25 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
                     break;
                 }
             }
-            // si no hay colisión con los muros busco colisiones con el player
+
+            // si no hay colisión con los muros busco colisiones con el resto de pelotas
+            if (newDirection == null) {
+                for (AnimatedRectangle otherBall : ballList) {
+                    if (!ball.equals(otherBall)) {
+                        newDirection = ball.ifIsGoingToCollideGetNewDirection(otherBall);
+                        if (newDirection != null) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // si no hay colisión con los muros ni con otras pelotas busco colisiones con el player
             if (newDirection == null) {
 //                Log.d("CHECK COLISION", ball.toString() + " <> " + player.toString());
                 newDirection = ball.ifIsGoingToCollideGetNewDirection(player);
             }
+
             // si no hay colisiones no cambio la dirección
             if (newDirection != null) {
                 ball.setDirection(newDirection);
