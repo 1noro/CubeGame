@@ -42,6 +42,8 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private List<Rectangle> wallList;
     private Rectangle player;
 
+    private boolean isDead = false;
+
     // ---------------------------------------------------------------------------------------------
 
     public MySurfaceView(Context context, AttributeSet attrs) {
@@ -188,6 +190,9 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             for (Rectangle wall : wallList) {
                 newDirection = ball.ifIsGoingToCollideGetNewDirection(wall);
                 if (newDirection != null) {
+                    if (wall.getName().startsWith("centerWall")) {
+                        isDead = true;
+                    }
                     break;
                 }
             }
@@ -224,7 +229,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
     private boolean detectDeath(){
         // comprobaciones de muerte
-        return false; // TODO: Cambiar
+        return isDead;
     }
 
     public void update() {
