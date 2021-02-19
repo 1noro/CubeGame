@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
+import net.a3do.cubegame.GameActivity;
 import net.a3do.cubegame.controller.MainLoop;
 import net.a3do.cubegame.model.AnimatedRectangle;
 import net.a3do.cubegame.model.Direction;
@@ -22,7 +23,7 @@ import java.util.List;
 
 public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-    // private Context context;
+     private final Context context;
 
     private int squareSize; // tamaño del lado de cada cuadrado (50)
     private final int canvasSquareWidth = 15; // 25
@@ -35,11 +36,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private Integer pixelInc = 0; // pixelIncrement (Velocity) (no debería ser superior a 6 u 8)
     private int ballNumber = 2;
 
-    private final MainLoop mainLoop;
+    private MainLoop mainLoop;
 
     // Elementos del tablero
-    private List<AnimatedRectangle> ballList;
-    private List<Rectangle> wallList;
+    private final List<AnimatedRectangle> ballList;
+    private final List<Rectangle> wallList;
     private Rectangle player;
 
     private boolean isDead = false;
@@ -49,8 +50,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     public MySurfaceView(Context context, AttributeSet attrs) {
         super(context, attrs);
         getHolder().addCallback(this); // asignamos esta misma clase para el callback
+        this.context = context;
         mainLoop = new MainLoop(getHolder(), this);
-        // this.context = context;
+        wallList = new ArrayList<>();
+        ballList = new ArrayList<>();
     }
 
     public MainLoop getMainLoop() {
@@ -83,13 +86,29 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         int x = minX + (int) (Math.random() * ((maxX - minX) + 1));
         int y = minY + (int) (Math.random() * ((maxY - minY) + 1));
 
+        // comprobamos si está en el medio
+        int centerWidth = (canvasSquareWidth * squareSize) / 2;
+//        int centerHeight = (canvasSquareHeight * squareSize) / 2;
+
+        if (x >= centerWidth - squareSize * 2 && x < centerWidth + squareSize * 2) {
+            if (Math.random() > 0.5) {
+                x += squareSize * 2.5;
+            } else {
+                x -= squareSize * 2.5;
+            }
+        }
+
         return new Point(x, y);
     }
 
     // ---------------------------------------------------------------------------------------------
 
     public void setupNewGame(){
-        wallList = new ArrayList<>();
+
+        isDead = false;
+
+        wallList.clear();
+        ballList.clear();
 
         // creamos el muro horizontal superior
         for (int i = 0; i < canvasSquareWidth; i++) {
@@ -148,7 +167,6 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         }
 
         // Creamos la pelota
-        ballList = new ArrayList<>();
         for (int i = 0; i < ballNumber; i++) {
             Point randomPoint = getRandomPointNotBorderWall();
             AnimatedRectangle ball = new AnimatedRectangle(new Square(randomPoint.getX(), randomPoint.getY(), squareSize, "ball" + i), this);
@@ -167,6 +185,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         // iniciamos el juego
         setupNewGame();
         nextFrameTime = System.currentTimeMillis();
+        mainLoop = new MainLoop(getHolder(), this);
         mainLoop.setPlaying(true);
         mainLoop.start();
     }
@@ -233,15 +252,19 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     }
 
     public void update() {
+
         if (updateTime()) {
             calculateNextMovement();
             invalidate(); // se actualiza la interfaz
         }
+
         // detectamos si el juego acaba
         if (detectDeath()) {
             mainLoop.setPlaying(false);
-            setupNewGame();
-        }
+            ((GameActivity) context).showDeadText();
+        }/* else {
+            ((GameActivity) context).hideDeadText();
+        }*/
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -250,6 +273,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         // pintamos el fondo negro cada vez que refrescamos
         // (al ser negro no es obligatorio ponerlo, pero lo hago para no olvidarme)
         canvas.drawRGB(0, 0, 0);
@@ -302,23 +326,21 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         // and other input controls. In this case, you are only
         // interested in events where the touch position changed.
 
-        // realizamos un click sobre la View, porque sino no funciona el click to start
-        performClick();
-
         float fX = e.getX();
         float fY = e.getY();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_DOWN:
 //                Log.d("ACTION_MOVE || ACTION_DOWN", "(" + fX + ", " + fY + ") ");
                 if (mainLoop.isPlaying()) {
                     player.moveCenterDirectly((int) fX, (int) fY);
                 }
                 break;
+            case MotionEvent.ACTION_DOWN:
+                // realizamos un click sobre la View, porque sino no funciona el click to start o reastart
+                performClick();
+                break;
         }
-
-//        performClick();
 
         return true;
     }

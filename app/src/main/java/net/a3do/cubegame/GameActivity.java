@@ -16,7 +16,8 @@ public class GameActivity extends AppCompatActivity {
 
     public static final String LEVEL_TAG = "level";
     private MySurfaceView mySurfaceView;
-    private TextView textInfo;
+    private TextView startText;
+    private TextView deadText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +30,9 @@ public class GameActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_game);
         this.mySurfaceView = findViewById(R.id.my_surface_view);
-        // this.mySurfaceView.setPixelInc(level * 2); // (2) si pongo * 10 el nivel 3 hace que se pase de largo al chocar
 
-        this.textInfo = findViewById(R.id.text_info);
+        this.startText = findViewById(R.id.start_text);
+        this.deadText = findViewById(R.id.dead_text);
 
         this.mySurfaceView.setOnClickListener(v -> {
             if (!this.mySurfaceView.getMainLoop().isPlaying()) {
@@ -40,12 +41,36 @@ public class GameActivity extends AppCompatActivity {
                 mySurfaceView.setPixelInc(level * 2); // (recomendado 2)
                 // con 60 bolas peta
                 mySurfaceView.setBallNumber(level * 2); // (recomendado 2)
-                textInfo.setVisibility(View.GONE);
+                if (startText.getVisibility() == View.VISIBLE) {
+                    startText.setVisibility(View.GONE);
+                }
+                if (deadText.getVisibility() == View.VISIBLE) {
+                    deadText.setVisibility(View.GONE);
+                }
                 mySurfaceView.startGame();
             }
         });
 
-//        Toast.makeText(this, "click to start", Toast.LENGTH_SHORT).show();
+    }
+
+    public void showDeadText() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                deadText.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideDeadText() {
+        if (deadText.getVisibility() == View.VISIBLE) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    deadText.setVisibility(View.GONE);
+                }
+            });
+        }
     }
 
     @Override
