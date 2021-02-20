@@ -4,5 +4,9 @@
     <string name="text_medium">2</string>
     <string name="text_hard">3</string>
     <string name="start_text">click to start</string>
-    <string name="dead_text">you died\npress to restart</string>
+    <string name="dead_text1">you died\npress to restart</string>
+    <string name="dead_text2">your score is 1\nyour best 10</string>
+    <string name="dead_text2_part1">your score is&#160;</string>
+    <string name="dead_text2_part2">\nyour best&#160;</string>
+    <string name="dead_text2_new_record">new record&#160;</string>
 </resources>

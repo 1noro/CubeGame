@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import net.a3do.cubegame.GameActivity;
 import net.a3do.cubegame.controller.MainLoop;
+import net.a3do.cubegame.controller.TimeCounterThread;
 import net.a3do.cubegame.model.AnimatedRectangle;
 import net.a3do.cubegame.model.Direction;
 import net.a3do.cubegame.model.Point;
@@ -37,6 +38,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
     private int ballNumber = 2;
 
     private MainLoop mainLoop;
+    private TimeCounterThread timeCounterThread;
 
     // Elementos del tablero
     private final List<AnimatedRectangle> ballList;
@@ -186,8 +188,10 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         setupNewGame();
         nextFrameTime = System.currentTimeMillis();
         mainLoop = new MainLoop(getHolder(), this);
+        timeCounterThread = new TimeCounterThread(mainLoop);
         mainLoop.setPlaying(true);
         mainLoop.start();
+        timeCounterThread.start();
     }
 
     // ---------------------------------------------------------------------------------------------
@@ -261,7 +265,7 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
         // detectamos si el juego acaba
         if (detectDeath()) {
             mainLoop.setPlaying(false);
-            ((GameActivity) context).showDeadText();
+            ((GameActivity) context).showDeadText(timeCounterThread.getSeconds());
         }/* else {
             ((GameActivity) context).hideDeadText();
         }*/
