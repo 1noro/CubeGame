@@ -1,6 +1,7 @@
 package net.a3do.cubegame;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -55,6 +56,9 @@ public class GameActivity extends AppCompatActivity {
                     deadTextLayout.setVisibility(View.GONE);
                 }
                 mySurfaceView.startGame();
+                // sonido de inicio
+//                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.arcade_bonus_229);
+//                mediaPlayer.start();
             }
         });
 

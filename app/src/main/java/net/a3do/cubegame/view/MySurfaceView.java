@@ -3,6 +3,7 @@ package net.a3do.cubegame.view;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -11,6 +12,7 @@ import android.view.SurfaceView;
 import androidx.annotation.NonNull;
 
 import net.a3do.cubegame.GameActivity;
+import net.a3do.cubegame.R;
 import net.a3do.cubegame.controller.MainLoop;
 import net.a3do.cubegame.controller.TimeCounterThread;
 import net.a3do.cubegame.model.AnimatedRectangle;
@@ -241,6 +243,11 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
             // si no hay colisiones no cambio la dirección
             if (newDirection != null) {
                 ball.setDirection(newDirection);
+                if (!isDead) {
+                    // sonido de bote
+                    MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.arcade_game_jump_coin_216);
+                    mediaPlayer.start();
+                }
             }
         }
 
@@ -264,11 +271,13 @@ public class MySurfaceView extends SurfaceView implements SurfaceHolder.Callback
 
         // detectamos si el juego acaba
         if (detectDeath()) {
+            // sonido de muerte
+            MediaPlayer mediaPlayer = MediaPlayer.create(context, R.raw.failure_arcade_alert_notification_240);
+            mediaPlayer.start();
+            
             mainLoop.setPlaying(false);
             ((GameActivity) context).showDeadText(timeCounterThread.getSeconds());
-        }/* else {
-            ((GameActivity) context).hideDeadText();
-        }*/
+        }
     }
 
     // ---------------------------------------------------------------------------------------------
