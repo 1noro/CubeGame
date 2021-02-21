@@ -1,6 +1,7 @@
 package net.a3do.cubegame;
 
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -24,6 +25,8 @@ public class GameActivity extends AppCompatActivity {
     private TextView startText;
     private LinearLayout deadTextLayout;
     private TextView deadText2;
+
+    private MediaPlayer backgroundMusic;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +58,16 @@ public class GameActivity extends AppCompatActivity {
                     deadTextLayout.setVisibility(View.GONE);
                 }
                 mySurfaceView.startGame();
+                // sonido de inicio
+//                MediaPlayer mediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.arcade_bonus_229);
+//                mediaPlayer.start();
             }
         });
+
+        this.backgroundMusic = MediaPlayer.create(getApplicationContext(), R.raw.aphex_twin_heliosphan);
+        this.backgroundMusic.setLooping(true);
+        this.backgroundMusic.setVolume(1f,1f);
+        this.backgroundMusic.start();
 
     }
 
@@ -84,5 +95,17 @@ public class GameActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.mySurfaceView.getMainLoop().setPlaying(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.backgroundMusic.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.backgroundMusic.start();
     }
 }
