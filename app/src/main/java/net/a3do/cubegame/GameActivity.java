@@ -26,6 +26,8 @@ public class GameActivity extends AppCompatActivity {
     private LinearLayout deadTextLayout;
     private TextView deadText2;
 
+    private MediaPlayer backgroundMusic;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,11 @@ public class GameActivity extends AppCompatActivity {
             }
         });
 
+        this.backgroundMusic = MediaPlayer.create(getApplicationContext(), R.raw.aphex_twin_heliosphan);
+        this.backgroundMusic.setLooping(true);
+        this.backgroundMusic.setVolume(1f,1f);
+        this.backgroundMusic.start();
+
     }
 
     public void showDeadText(int new_score) {
@@ -88,5 +95,17 @@ public class GameActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         this.mySurfaceView.getMainLoop().setPlaying(false);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        this.backgroundMusic.pause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.backgroundMusic.start();
     }
 }
